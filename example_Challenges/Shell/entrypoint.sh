@@ -6,7 +6,12 @@ ssh-keygen -A
 # 2. Grab variables injected by k8sWorker.js (with comprehensive aliases and fallbacks)
 USER="${SSH_USER:-${SHELL_USER:-${USER_NAME:-${USERNAME:-${USER:-root}}}}}"
 PASS="${SSH_PASSWORD:-${SHELL_PASSWORD:-${PASSWORD:-${USER_PASSWORD:-cyberanzen123}}}}"
-FLAG_VAL="${CHALLENGE_FLAG:-${FLAG:-${DYNAMIC_FLAG:-CYBERANZEN{DEFAULT_SHELL_FLAG}}}}"
+FLAG_VAL="$CHALLENGE_FLAG"
+[ -z "$FLAG_VAL" ] && FLAG_VAL="$FLAG"
+[ -z "$FLAG_VAL" ] && FLAG_VAL="$DYNAMIC_FLAG"
+[ -z "$FLAG_VAL" ] && FLAG_VAL="$FLAG_VALUE"
+[ -z "$FLAG_VAL" ] && FLAG_VAL="$TARGET_FLAG"
+[ -z "$FLAG_VAL" ] && FLAG_VAL="YUVA{DEFAULT_SHELL_FLAG}"
 
 # 3. Write dynamic flag to /flag.txt, /root/flag.txt, and /home/ctf/flag.txt
 echo "$FLAG_VAL" > /flag.txt

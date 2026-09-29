@@ -1,0 +1,14 @@
+name: 31-jenkins-nightmare
+category: pwn
+difficulty: Expert
+description: |
+  Jenkins Nightmare (CI/CD Pipeline Security). Exploit parameter injection in automated test hooks on TCP/8091, capture build runner environment variables, extract private registry layer secrets, and forge an authorized production dispatch to capture the flag.
+docker:
+  internal_ports: [80]
+connection:
+  protocol: http
+  port: 8091
+credentials:
+  username: anonymous
+  password: 
+flag: YUVA{c1_cd_ch41n_0f_trust_c0mpr0m1s3d_x01}

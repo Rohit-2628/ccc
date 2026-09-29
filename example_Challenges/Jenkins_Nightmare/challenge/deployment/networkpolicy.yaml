@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: x01-jenkins-nightmare-netpol
+  labels:
+    app: x01-jenkins-nightmare
+spec:
+  podSelector:
+    matchLabels:
+      app: x01-jenkins-nightmare
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow platform gateway on TCP/80
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # Allow internal DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latveria Sovereign CI/CD — Jenkins Nightmare Console</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-badge">LATVERIA CI</span>
+                <span class="logo-title">Jenkins Nightmare Orchestrator</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-item {% if page == 'dashboard' %}active{% endif %}">Dashboard</a>
+                <a href="/repos" class="nav-item {% if page == 'repos' or page == 'repo_detail' %}active{% endif %}">Repositories</a>
+                <a href="/pipelines" class="nav-item {% if page == 'pipelines' %}active{% endif %}">Pipelines</a>
+                <a href="/builds" class="nav-item {% if page == 'builds' or page == 'build_detail' %}active{% endif %}">Build History</a>
+            </nav>
+            <div class="cluster-status">
+                <span class="status-indicator online"></span>
+                <span>Runner: sandboxed-builder-v3 (90s limit)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% if page == 'dashboard' %}
+        <section class="hero-card">
+            <div class="hero-body">
+                <h2>Sovereign CI/CD Control Plane</h2>
+                <p>Automated build pipelines, isolated ephemeral runner sandboxes, and sovereign OCI artifact staging.</p>
+                <div class="quick-stats">
+                    <div class="stat-box">
+                        <span class="stat-value">2</span>
+                        <span class="stat-label">Repositories</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">sandboxed-builder-v3</span>
+                        <span class="stat-label">Isolated Runner</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">OCI v2 Local</span>
+                        <span class="stat-label">Private Registry</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-value">90s</span>
+                        <span class="stat-label">Hard Build Timeout</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid-2">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>⚡ Trigger CI Pipeline Build</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="trigger-build-form">
+                        <div class="form-group">
+                            <label>Repository:</label>
+                            <select id="build-repo" class="form-control">
+                                {% for r in repos %}
+                                <option value="{{ r.id }}">{{ r.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch / Commit Ref:</label>
+                            <input type="text" id="build-branch" class="form-control" value="main">
+                        </div>
+                        <div class="form-group">
+                            <label>Custom Test Hook (<code>CUSTOM_TEST_HOOK</code>):</label>
+                            <input type="text" id="build-hook" class="form-control" placeholder="e.g. env || make test" value="">
+                            <small class="form-hint">Evaluated in isolated runner test phase as specified in pipeline.yaml.</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-submit-build">Dispatch Build Job</button>
+                    </form>
+                    <div id="trigger-result" class="alert-box" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>📜 Recent Pipeline Executions</h3>
+                </div>
+                <div class="panel-body table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Build ID</th>
+                                <th>Repo</th>
+                                <th>Branch</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in recent_builds %}
+                            <tr>
+                                <td><strong>#{{ b.build_id }}</strong></td>
+                                <td>{{ b.repo }}</td>
+                                <td><code>{{ b.branch }}</code></td>
+                                <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+                                <td><a href="/builds/{{ b.build_id }}" class="btn btn-sm">Console Log</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        {% elif page == 'repos' %}
+        <section class="panel">
+            <div class="panel-header">
+                <h3>📦 Repositories</h3>
+            </div>
+            <div class="panel-body">
+                <div class="repo-list">
+                    {% for r in repos %}
+                    <div class="repo-card">
+                        <div class="repo-info">
+                            <h4><a href="/repos/{{ r.id }}">{{ r.name }}</a></h4>
+                            <p>{{ r.description }}</p>
+                            <span class="meta-tag">Default Branch: {{ r.default_branch }}</span>
+                            <span class="meta-tag">{{ r.commit_count }} commits</span>
+                        </div>
+                        <div class="repo-actions">
+                            <a href="/repos/{{ r.id }}" class="btn btn-secondary">Browse Source</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {% elif page == 'repo_detail' %}
+        <section class="panel">
+            <div class="panel-header">
+                <h3>📁 {{ repo.name }} (<code>{{ repo.default_branch }}</code>)</h3>
+                <a href="/repos" class="btn btn-sm btn-outline">Back to Repos</a>
+            </div>
+            <div class="panel-body grid-tree">
+                <div class="file-tree-sidebar">
+                    <h4>Files</h4>
+                    <ul class="file-list">
+                        {% for f in files %}
+                        <li>
+                            <a href="/repos/{{ repo.id }}?file={{ f.path }}" class="{% if f.path == selected_file %}active-file{% endif %}">
+                                📄 {{ f.path }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <h4 style="margin-top: 20px;">Commit History</h4>
+                    <ul class="commit-list">
+                        {% for c in commits %}
+                        <li class="commit-item">
+                            <span class="commit-msg">{{ c.message }}</span>
+                            <span class="commit-meta">{{ c.author }} • {{ c.commit_id[:8] }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="file-viewer">
+                    <div class="file-viewer-header">
+                        <span>Viewing: <strong>{{ selected_file }}</strong></span>
+                    </div>
+                    <pre class="code-block"><code>{{ file_content }}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        {% elif page == 'pipelines' %}
+        <section class="panel">
+            <div class="panel-header">
+                <h3>⚙️ Pipeline Architectures & Runner Specs</h3>
+            </div>
+            <div class="panel-body">
+                <div class="pipeline-doc">
+                    <h4>CI / CD Trust Chain Architecture</h4>
+                    <div class="chain-box">
+                        <code>Git Repository ➔ CI Orchestrator ➔ Isolated Build Runner ➔ OCI Container Registry ➔ Production Mainframe</code>
+                    </div>
+                    <h4 style="margin-top: 20px;">Isolated Runner Environment</h4>
+                    <p>The builder runtime is sandboxed. Build jobs are executed in ephemeral temporary workspaces and pushed to the local container registry at <code>http://127.0.0.1:5000</code> with registry bearer credentials.</p>
+                </div>
+            </div>
+        </section>
+
+        {% elif page == 'builds' %}
+        <section class="panel">
+            <div class="panel-header">
+                <h3>📋 Complete Build History</h3>
+            </div>
+            <div class="panel-body table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Build ID</th>
+                            <th>Repository</th>
+                            <th>Branch</th>
+                            <th>Status</th>
+                            <th>Console</th>
+                            <th>Artifacts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in builds %}
+                        <tr>
+                            <td>#{{ b.build_id }}</td>
+                            <td>{{ b.repo }}</td>
+                            <td><code>{{ b.branch }}</code></td>
+                            <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+                            <td><a href="/builds/{{ b.build_id }}" class="btn btn-sm">View Output</a></td>
+                            <td>
+                                {% if b.has_artifacts %}
+                                <a href="/api/builds/{{ b.build_id }}/artifacts" class="btn btn-sm btn-secondary">Download .tar.gz</a>
+                                {% else %}
+                                <span class="text-muted">None</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        {% elif page == 'build_detail' %}
+        <section class="panel">
+            <div class="panel-header">
+                <h3>🖥️ Console Output — Build #{{ build.build_id }}</h3>
+                <div class="header-actions">
+                    <span class="badge badge-{{ build.status.lower() }}">{{ build.status }}</span>
+                    {% if build.has_artifacts %}
+                    <a href="/api/builds/{{ build.build_id }}/artifacts" class="btn btn-sm btn-secondary">Download Artifacts (.tar.gz)</a>
+                    {% endif %}
+                    <a href="/builds" class="btn btn-sm btn-outline">Back to Builds</a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="console-wrapper">
+                    <pre class="console-log" id="live-console">{% for l in build.logs %}{{ l }}
+{% endfor %}</pre>
+                </div>
+            </div>
+        </section>
+
+        {% elif page == 'error' %}
+        <div class="alert-box alert-error">
+            <h3>Error</h3>
+            <p>{{ message }}</p>
+            <a href="/" class="btn btn-secondary">Return to Dashboard</a>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <span>Latverian Sovereign Defense Infrastructure • Security Grade: STRICT_ISOLATION</span>
+            <span>Masterbook Limit: 2 GiB / 90s Hard Timeout</span>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

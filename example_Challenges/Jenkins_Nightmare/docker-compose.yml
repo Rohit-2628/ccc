@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  31-jenkins-nightmare:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 31-jenkins-nightmare:latest
+    container_name: 31-jenkins-nightmare
+    ports:
+      - "8091:80"
+    environment:
+      - FLAG=${FLAG:-YUVA{c1_cd_ch41n_0f_trust_c0mpr0m1s3d_x01}}
+      - PORT=80
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    restart: unless-stopped
