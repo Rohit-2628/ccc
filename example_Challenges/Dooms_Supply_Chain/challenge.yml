@@ -1,0 +1,14 @@
+name: 33-dooms-supply-chain
+category: web
+difficulty: Expert
+description: |
+  Doom's Supply Chain. Exploit package repository trust relationships and dependency confusion on TCP/8093, inject a trojanized release package into automated builds, and extract the production deployment flag.
+docker:
+  internal_ports: [80]
+connection:
+  protocol: http
+  port: 8093
+credentials:
+  username: anonymous
+  password: 
+flag: YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}

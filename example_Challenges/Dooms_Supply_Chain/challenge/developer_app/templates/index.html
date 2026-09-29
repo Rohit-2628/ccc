@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latveria Cyber-Supply Chain Control Center</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="hud-scanline"></div>
+    <header class="top-nav">
+        <div class="brand">
+            <div class="logo-shield">DOOM</div>
+            <div class="brand-text">
+                <h1>LATVERIA SUPPLY CHAIN ORCHESTRATOR</h1>
+                <span class="sub-label">SOVEREIGN AI & CYBER-MANUFACTURING REGISTRY // X03</span>
+            </div>
+        </div>
+        <div class="system-status">
+            <div class="status-indicator online"></div>
+            <span class="status-text">NETWORK: SECURE INTERNAL</span>
+            <button id="reset-btn" class="btn-ghost" title="Restore pristine environment snapshot">RESTORE SNAPSHOT</button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Supply Chain Interactive Pipeline Bar -->
+        <section class="pipeline-flow">
+            <div class="flow-step active" data-tab="overview">
+                <div class="step-num">01</div>
+                <div class="step-info">
+                    <div class="step-title">Developer Portal</div>
+                    <div class="step-desc">Target App & Topology</div>
+                </div>
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-step" data-tab="packages">
+                <div class="step-num">02</div>
+                <div class="step-info">
+                    <div class="step-title">Package Registry</div>
+                    <div class="step-desc">Internal Package Index</div>
+                </div>
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-step" data-tab="ci">
+                <div class="step-num">03</div>
+                <div class="step-info">
+                    <div class="step-title">CI/CD Pipeline</div>
+                    <div class="step-desc">Automated Build & Provenance</div>
+                </div>
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-step" data-tab="registry">
+                <div class="step-num">04</div>
+                <div class="step-info">
+                    <div class="step-title">Image Registry</div>
+                    <div class="step-desc">OCI Container Artifacts</div>
+                </div>
+            </div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-step" data-tab="deployment">
+                <div class="step-num">05</div>
+                <div class="step-info">
+                    <div class="step-title">Production Runtime</div>
+                    <div class="step-desc">Live Mainframe Cluster</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 1: Overview & Topology -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>SUPPLY CHAIN TOPOLOGY</h2>
+                        <span class="badge badge-green">ACTIVE TRACE</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="intro-p">
+                            The Latveria Cyber-Supply Chain automates dependency resolution, hermetic container builds, OCI layer artifact publishing, and live mainframe rollouts.
+                        </p>
+                        <div class="topology-diagram">
+                            <div class="diag-node">
+                                <span class="node-title">Public Gateway</span>
+                                <span class="node-detail">TCP/80 HTTP</span>
+                            </div>
+                            <div class="diag-node">
+                                <span class="node-title">Package Index</span>
+                                <span class="node-detail">127.0.0.1:4873</span>
+                            </div>
+                            <div class="diag-node">
+                                <span class="node-title">CI Runner</span>
+                                <span class="node-detail">127.0.0.1:8082</span>
+                            </div>
+                            <div class="diag-node">
+                                <span class="node-title">OCI Registry</span>
+                                <span class="node-detail">127.0.0.1:5000</span>
+                            </div>
+                            <div class="diag-node">
+                                <span class="node-title">Production Core</span>
+                                <span class="node-detail">127.0.0.1:8083</span>
+                            </div>
+                        </div>
+                        <div class="code-box">
+                            <div class="code-header">ACTIVE PRODUCTION RELEASE MANIFEST</div>
+                            <pre><code>{
+  "project": "@latveria/doombot-matrix",
+  "version": "3.0.0",
+  "deployed_image": "registry.latveria.local/doombot/production-defense:v3.0.0-build201",
+  "cluster": "SOVEREIGN-PRODUCTION-MAINFRAME-01",
+  "dependencies": {
+    "@latveria/core-crypto": "^1.0.0",
+    "@latveria/defense-telemetry": "^1.4.0",
+    "@latveria/sentinel-guard": "^2.1.0"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>INVESTIGATION CHEATSHEET & API CONSOLE</h2>
+                        <span class="badge badge-yellow">DEVELOPER ENDPOINTS</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="endpoint-list">
+                            <div class="endpoint-item">
+                                <span class="method get">GET</span>
+                                <span class="path">/api/packages</span>
+                                <span class="desc">Enumerate packages and semantic versions</span>
+                            </div>
+                            <div class="endpoint-item">
+                                <span class="method get">GET</span>
+                                <span class="path">/api/packages/:pkg</span>
+                                <span class="desc">Inspect full package metadata and commit provenance</span>
+                            </div>
+                            <div class="endpoint-item">
+                                <span class="method get">GET</span>
+                                <span class="path">/api/ci/builds</span>
+                                <span class="desc">List CI build records and execution logs</span>
+                            </div>
+                            <div class="endpoint-item">
+                                <span class="method get">GET</span>
+                                <span class="path">/registry/v2/_catalog</span>
+                                <span class="desc">Enumerate OCI image repositories</span>
+                            </div>
+                            <div class="endpoint-item">
+                                <span class="method get">GET</span>
+                                <span class="path">/api/deployment/status</span>
+                                <span class="desc">Check production defense mainframe status</span>
+                            </div>
+                            <div class="endpoint-item">
+                                <span class="method post">POST</span>
+                                <span class="path">/api/deployment/override</span>
+                                <span class="desc">Submit maintenance override payload</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Package Registry -->
+        <section id="tab-packages" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>INTERNAL PACKAGE REGISTRY BROWSER</h2>
+                    <div class="header-actions">
+                        <input type="text" id="pkg-search" placeholder="Search packages (e.g. sentinel)..." class="input-search">
+                        <button id="refresh-pkgs-btn" class="btn-primary">REFRESH</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="packages-list" class="grid-cards">
+                        <div class="loading">Loading package metadata from repository...</div>
+                    </div>
+                    <div id="package-detail-modal" class="detail-drawer hidden">
+                        <div class="drawer-header">
+                            <h3 id="modal-pkg-name">Package Details</h3>
+                            <button id="close-drawer" class="btn-close">&times;</button>
+                        </div>
+                        <div class="drawer-body" id="modal-pkg-body">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: CI/CD Pipeline -->
+        <section id="tab-ci" class="tab-content">
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>BUILD PIPELINES & HISTORY</h2>
+                        <button id="trigger-build-btn" class="btn-primary">TRIGGER NEW BUILD</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="builds-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>BUILD</th>
+                                        <th>PIPELINE</th>
+                                        <th>STATUS</th>
+                                        <th>OUTPUT IMAGE</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="builds-tbody">
+                                    <tr><td colspan="5" class="loading">Fetching build records...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>BUILD EXECUTION CONSOLE</h2>
+                        <span id="active-build-badge" class="badge badge-green">SELECT BUILD</span>
+                    </div>
+                    <div class="card-body">
+                        <pre id="build-log-console" class="terminal-view">Select a build record on the left to view deterministic build log and resolved package dependencies...</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4: Image Registry -->
+        <section id="tab-registry" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>OCI CONTAINER IMAGE REGISTRY (v2)</h2>
+                    <button id="refresh-registry-btn" class="btn-primary">SCAN REGISTRY</button>
+                </div>
+                <div class="card-body">
+                    <div id="registry-content">
+                        <div class="loading">Querying OCI v2 catalog...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 5: Production Deployment -->
+        <section id="tab-deployment" class="tab-content">
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>SOVEREIGN PRODUCTION CLUSTER</h2>
+                        <span class="badge badge-green">LIVE RUNTIME</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="deployment-status-box" class="status-summary">
+                            <div class="loading">Querying production runtime...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>EMERGENCY OVERRIDE DISPATCHER</h2>
+                        <span class="badge badge-yellow">MAINTAINER ACCESS</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="override-form">
+                            <div class="form-group">
+                                <label for="override-header">X-Latveria-Override-Key Header:</label>
+                                <input type="text" id="override-header" class="input-text" placeholder="e.g. latv_maint_token_..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="override-payload">JSON Payload:</label>
+                                <textarea id="override-payload" class="input-textarea" rows="5" required>{
+  "action": "EMERGENCY_OVERRIDE_MAINFRAME",
+  "target": "SENTINEL_SOVEREIGN_CORE",
+  "role": "OVERRIDE_MAINTAINER"
+}</textarea>
+                            </div>
+                            <button type="submit" class="btn-primary btn-block">TRANSMIT OVERRIDE</button>
+                        </form>
+                        <div id="override-result" class="result-box hidden">
+                            <!-- Result output -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div>Latveria Sovereign Defense Grid &copy; 2026 // System ID: X03-SUPPLY-CHAIN</div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

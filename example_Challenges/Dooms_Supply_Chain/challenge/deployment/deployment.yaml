@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: x03-dooms-supply-chain
+  labels:
+    app: x03-dooms-supply-chain
+    challenge: x03
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: x03-dooms-supply-chain
+  template:
+    metadata:
+      labels:
+        app: x03-dooms-supply-chain
+        challenge: x03
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: challenge
+        image: x03-dooms-supply-chain:latest
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+        env:
+        - name: PORT
+          value: "80"
+        - name: FLAG
+          value: "YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}"
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: tmp-volume
+        emptyDir:
+          medium: Memory
+          sizeLimit: 512Mi

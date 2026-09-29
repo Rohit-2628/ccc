@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  33-dooms-supply-chain:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 33-dooms-supply-chain:latest
+    container_name: 33-dooms-supply-chain
+    ports:
+      - "8093:80"
+    environment:
+      - FLAG=${FLAG:-YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}}
+      - PORT=80
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    restart: unless-stopped
+

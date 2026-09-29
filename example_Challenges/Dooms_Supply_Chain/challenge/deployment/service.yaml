@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: x03-dooms-supply-chain-svc
+  labels:
+    app: x03-dooms-supply-chain
+spec:
+  type: ClusterIP
+  selector:
+    app: x03-dooms-supply-chain
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
