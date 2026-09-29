@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: x10-zero-trust-failure-netpol
+  namespace: team-sandbox
+  labels:
+    app.kubernetes.io/name: x10-zero-trust-failure
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: x10-zero-trust-failure
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow external ingress traffic only to the documented HTTP Gateway port 80
+    - ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # Allow DNS resolution within cluster
+    - ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

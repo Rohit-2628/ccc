@@ -1,0 +1,14 @@
+name: 40-zero-trust-failure
+category: web
+difficulty: Expert
+description: |
+  Zero Trust Failure (mTLS Relay & Identity Confusion). Exploit trust propagation flaws in the zero-trust mesh gateway on TCP/8100, bypass header sanitization, impersonate high-trust service identities, and exfiltrate the sovereign flag.
+docker:
+  internal_ports: [80]
+connection:
+  protocol: http
+  port: 8100
+credentials:
+  username: anonymous
+  password: 
+flag: YUVA{z3r0_trust_f41lur3_s3rv1c3_1d3nt1ty_x10}

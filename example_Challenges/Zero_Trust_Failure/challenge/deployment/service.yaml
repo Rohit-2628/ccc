@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: x10-zero-trust-failure-svc
+  namespace: team-sandbox
+  labels:
+    app.kubernetes.io/name: x10-zero-trust-failure
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: x10-zero-trust-failure
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
