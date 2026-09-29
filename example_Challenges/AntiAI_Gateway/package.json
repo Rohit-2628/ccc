@@ -1,0 +1,12 @@
+{
+  "name": "anti-ai-gateway",
+  "version": "1.0.0",
+  "description": "Cyberanzen Anti-AI Propaganda Gateway Challenge",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ctf-challenge-demo",
+  "version": "1.0.0",
+  "description": "Cyberanzen Example Challenge with Dynamic Flag Support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
