@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LATVERIA // BROKEN CI — Sovereign Pipeline Gateway (X04)</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="icon">⬢</span>
+                <div>
+                    <h1>LATVERIA SOVEREIGN CI/CD PLATFORM</h1>
+                    <p class="subtitle">AUTONOMOUS CYBER-INFRASTRUCTURE &bull; CHALLENGE X04 &bull; BROKEN CI</p>
+                </div>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-risk">SANDBOX: DIND ISOLATED</span>
+                <span class="badge badge-online">STATUS: ONLINE</span>
+            </div>
+        </header>
+
+        <!-- Architecture Flow -->
+        <section class="card topology-section">
+            <h2>CI/CD TRUST ARCHITECTURE</h2>
+            <div class="pipeline-flow">
+                <div class="flow-node">
+                    <span class="node-icon">⌥</span>
+                    <span class="node-title">1. Git Gateway</span>
+                    <span class="node-desc">TCP/22 &bull; /api/git</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-node active">
+                    <span class="node-icon">⚙</span>
+                    <span class="node-title">2. CI Runner</span>
+                    <span class="node-desc">Worker node-01</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-node">
+                    <span class="node-icon">🐳</span>
+                    <span class="node-title">3. Inner Docker</span>
+                    <span class="node-desc">DinD Daemon (tcp://:2375)</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-node">
+                    <span class="node-icon">📦</span>
+                    <span class="node-title">4. OCI Registry</span>
+                    <span class="node-desc">registry.latveria.local:5000</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-node">
+                    <span class="node-icon">🛡</span>
+                    <span class="node-title">5. Production Mock</span>
+                    <span class="node-desc">SOVEREIGN-PROD-01</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Tabs -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('git')">📁 Git Repositories</button>
+            <button class="tab-btn" onclick="switchTab('ci')">⚙ CI Pipeline &amp; Builds</button>
+            <button class="tab-btn" onclick="switchTab('dind')">🐳 Inner Docker Daemon</button>
+            <button class="tab-btn" onclick="switchTab('registry')">📦 OCI Registry V2</button>
+            <button class="tab-btn" onclick="switchTab('production')">🛡 Production Mainframe</button>
+            <button class="tab-btn" onclick="switchTab('terminal')">💻 Web Console / API</button>
+        </div>
+
+        <!-- TAB: GIT -->
+        <div id="tab-git" class="tab-content active">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Repository Overview</h3>
+                    <div id="git-repo-details">Loading repository data...</div>
+                    <div class="code-box">
+                        <strong>Clone via HTTP:</strong> <code>git clone http://&lt;HOST&gt;/api/git/defense-network.git</code><br>
+                        <strong>Clone via SSH:</strong> <code>git clone git@&lt;HOST&gt;:defense-network.git</code>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Commit History</h3>
+                    <div id="git-commits-list">Loading commit logs...</div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 15px;">
+                <h3>Repository File Tree</h3>
+                <div id="git-files-tree">Loading files...</div>
+                <div id="git-file-viewer" class="viewer-box" style="display:none; margin-top:10px;">
+                    <div class="viewer-header">
+                        <span id="viewer-filename">File</span>
+                        <button onclick="closeViewer()" class="btn-sm">Close</button>
+                    </div>
+                    <pre><code id="viewer-code"></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: CI -->
+        <div id="tab-ci" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Trigger Pipeline Build</h3>
+                    <p class="text-muted">Trigger a build execution on the worker runner node.</p>
+                    <form id="trigger-form" onsubmit="triggerBuild(event)">
+                        <label>Repository:</label>
+                        <input type="text" id="ci-repo" value="latveria/defense-network" class="input-field" required>
+                        <label>Branch / Commit:</label>
+                        <input type="text" id="ci-branch" value="main" class="input-field" required>
+                        <label>Custom Pipeline Hook Command (Diagnostic / Override):</label>
+                        <input type="text" id="ci-custom-cmd" placeholder="e.g. docker images" class="input-field">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">▶ Trigger CI Build</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h3>Runner Infrastructure Status</h3>
+                    <div id="ci-runner-status">Checking runner...</div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 15px;">
+                <h3>Build History</h3>
+                <div id="ci-builds-list">Loading builds...</div>
+                <div id="ci-log-viewer" class="viewer-box" style="display:none; margin-top:10px;">
+                    <div class="viewer-header">
+                        <span id="ci-log-title">Build Log</span>
+                        <button onclick="closeLogViewer()" class="btn-sm">Close</button>
+                    </div>
+                    <pre><code id="ci-log-content"></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: DIND -->
+        <div id="tab-dind" class="tab-content">
+            <div class="card">
+                <h3>Inner Docker Daemon (DinD) Diagnostics</h3>
+                <p>The CI runner is connected to a challenge-local inner Docker daemon on <code>tcp://127.0.0.1:2375</code>.</p>
+                <div class="code-box">
+                    <strong>Daemon Host:</strong> <code>tcp://127.0.0.1:2375</code><br>
+                    <strong>Storage Driver:</strong> <code>overlay2</code> (Nested Sandbox)<br>
+                    <strong>Isolation:</strong> Strictly isolated from outer host environment.
+                </div>
+                <h4 style="margin-top: 15px;">Inner Daemon Cached Images</h4>
+                <div id="dind-images-list">Querying inner daemon...</div>
+            </div>
+        </div>
+
+        <!-- TAB: REGISTRY -->
+        <div id="tab-registry" class="tab-content">
+            <div class="card">
+                <h3>Challenge-Local OCI / Docker Registry (v2)</h3>
+                <p>Internal image repository serving pipeline builds and deployment targets.</p>
+                <div class="code-box">
+                    <strong>Registry Endpoint:</strong> <code>http://127.0.0.1:5000/v2/</code> (Proxied at <code>/registry/v2/</code>)<br>
+                    <strong>Auth Mode:</strong> Bearer / Docker Secret Token
+                </div>
+                <h4 style="margin-top: 15px;">Published Repositories</h4>
+                <div id="registry-catalog-list">Loading catalog...</div>
+                <div id="registry-manifest-viewer" class="viewer-box" style="display:none; margin-top:10px;">
+                    <div class="viewer-header">
+                        <span id="registry-manifest-title">Manifest</span>
+                        <button onclick="closeManifestViewer()" class="btn-sm">Close</button>
+                    </div>
+                    <pre><code id="registry-manifest-content"></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: PRODUCTION -->
+        <div id="tab-production" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Production Mainframe Target</h3>
+                    <div id="prod-status-box">Loading production status...</div>
+                </div>
+                <div class="card">
+                    <h3>Submit Production Promotion</h3>
+                    <form id="deploy-form" onsubmit="submitDeployment(event)">
+                        <label>Target Image:</label>
+                        <input type="text" id="deploy-image" value="registry.latveria.local:5000/defense/sentinel-node:v2.1.0" class="input-field" required>
+                        <label>Signer ID:</label>
+                        <input type="text" id="deploy-signer-id" placeholder="e.g. DOOM-DEPLOYMENT-SIGNER-04" class="input-field" required>
+                        <label>Cryptographic Signing Key / Signature:</label>
+                        <input type="text" id="deploy-signing-key" placeholder="e.g. latv_prod_deploy_sig_..." class="input-field" required>
+                        <label>Action:</label>
+                        <input type="text" id="deploy-action" value="PROMOTE_TO_PRODUCTION" class="input-field" required>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">🚀 Authorize Production Promotion</button>
+                    </form>
+                    <div id="deploy-result-box" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: TERMINAL / API -->
+        <div id="tab-terminal" class="tab-content">
+            <div class="card">
+                <h3>Interactive API &amp; Web Console</h3>
+                <p>Execute REST queries against gateway endpoints.</p>
+                <div class="api-shortcuts">
+                    <button class="btn-sm" onclick="runApiGet('/api/ci/status')">GET /api/ci/status</button>
+                    <button class="btn-sm" onclick="runApiGet('/api/ci/builds')">GET /api/ci/builds</button>
+                    <button class="btn-sm" onclick="runApiGet('/api/git/repos')">GET /api/git/repos</button>
+                    <button class="btn-sm" onclick="runApiGet('/registry/v2/_catalog')">GET /registry/v2/_catalog</button>
+                    <button class="btn-sm" onclick="runApiGet('/api/production/status')">GET /api/production/status</button>
+                </div>
+                <div style="margin-top: 10px; display:flex; gap:10px;">
+                    <input type="text" id="api-url" value="/api/ci/status" class="input-field" style="flex:1;">
+                    <button class="btn btn-primary" onclick="executeApiQuery()">Send Query</button>
+                </div>
+                <div class="viewer-box" style="margin-top: 10px;">
+                    <pre><code id="api-response-box">Click a query button or enter an endpoint above...</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>LATVERIAN SOVEREIGN CYBERNETIC DEFENSE &bull; DOCTOR DOOM SECURITY MAINFRAME &bull; X04 BROKEN CI</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

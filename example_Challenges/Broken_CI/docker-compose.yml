@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  34-broken-ci:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 34-broken-ci:latest
+    container_name: 34-broken-ci
+    ports:
+      - "8094:80"
+    environment:
+      - FLAG=${FLAG:-YUVA{d1nd_c1_runn3r_r3g1stry_pr0d_p1v0t_x04}}
+      - PORT=80
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    restart: unless-stopped

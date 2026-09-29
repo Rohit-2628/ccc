@@ -1,0 +1,59 @@
+# Dedicated Disposable VM / Sandbox Specification for X04 (Broken CI)
+# Classification: SANDBOX_REQUIRED / HIGH_RISK
+# Inner Docker Daemons: exactly one (isolated)
+
+sandbox_spec:
+  challenge_id: X04
+  challenge_name: "Broken CI"
+  isolation_mode: "dedicated_disposable_vm"
+  runtime_environment: "qemu_kvm_or_firecracker"
+  
+  resources:
+    vcpu: 4
+    memory_mib: 4096
+    disk_gib: 8
+    max_concurrent_builds: 4
+    max_nested_containers: 16
+    process_limit_pids: 2048
+
+  interfaces:
+    public_ports:
+      - port: 80
+        protocol: TCP
+        description: "HTTP Gateway Web Console & Smart Git HTTP"
+      - port: 22
+        protocol: TCP
+        description: "Git SSH Service"
+    internal_private_ports:
+      - port: 2375
+        bind: "127.0.0.1"
+        description: "Inner Docker Daemon REST API (DOCKER_HOST)"
+      - port: 5000
+        bind: "127.0.0.1"
+        description: "Challenge-Local OCI Registry v2"
+      - port: 8081
+        bind: "127.0.0.1"
+        description: "Internal Git Backend Server"
+      - port: 8082
+        bind: "127.0.0.1"
+        description: "Internal CI Orchestrator"
+      - port: 8083
+        bind: "127.0.0.1"
+        description: "Internal Production Mock Mainframe"
+
+  security_boundaries:
+    mount_host_docker_socket: false
+    mount_host_containerd_socket: false
+    mount_host_filesystem: false
+    expose_k8s_control_plane: false
+    expose_cloud_metadata_169_254: false
+    allow_cross_team_routing: false
+
+  reset_lifecycle:
+    method: "destroy_and_recreate_sandbox"
+    teardown_steps:
+      - "Purge VM / container memory state"
+      - "Wipe /tmp/x04_storage"
+      - "Re-execute seed_state.py snapshot generation"
+      - "Regenerate dynamic team-specific flag"
+      - "Restart supervised local microservices"

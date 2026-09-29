@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: x04-broken-ci
+  namespace: team-sandbox
+  labels:
+    app.kubernetes.io/name: x04-broken-ci
+    app.kubernetes.io/part-of: latveria-ctf
+    challenge: x04
+    classification: sandbox-required
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: x04-broken-ci
+  template:
+    metadata:
+      labels:
+        app: x04-broken-ci
+        challenge: x04
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: broken-ci
+          image: x04-broken-ci:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 80
+              name: http-gateway
+            - containerPort: 22
+              name: ssh-git
+          env:
+            - name: FLAG
+              value: "YUVA{d1nd_c1_runn3r_r3g1stry_pr0d_p1v0t_x04}"
+            - name: PORT
+              value: "80"
+            - name: SSH_PORT
+              value: "22"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "4000m"
+              memory: "4096Mi"
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /tmp
+      volumes:
+        - name: storage-volume
+          emptyDir:
+            sizeLimit: 4Gi

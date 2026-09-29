@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: x04-broken-ci-service
+  namespace: team-sandbox
+  labels:
+    app: x04-broken-ci
+    challenge: x04
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-gateway
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: ssh-git
+      port: 22
+      targetPort: 22
+      protocol: TCP
+  selector:
+    app: x04-broken-ci

@@ -1,0 +1,14 @@
+name: 34-broken-ci
+category: pwn
+difficulty: Expert
+description: |
+  Broken CI (Git SSH & DinD Runner Pivot). Connect to the Git server on port 2234 or Web Status on port 8094, exploit CI build script injection, pivot through the Docker-in-Docker runner, and capture the production deployment secret.
+docker:
+  internal_ports: [80]
+connection:
+  protocol: http
+  port: 8094
+credentials:
+  username: developer
+  password: developer
+flag: YUVA{d1nd_c1_runn3r_r3g1stry_pr0d_p1v0t_x04}
