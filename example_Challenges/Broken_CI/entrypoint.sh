@@ -58,16 +58,10 @@ echo "[*] Launching Sovereign Production Mainframe Mock..."
 python3 /app/challenge/production/prod_server.py &
 PID_PROD=$!
 
-# 8. Start SSH Git Service on TCP/22 (or configured SSH_PORT)
-SSH_PORT=${SSH_PORT:-22}
-echo "[*] Launching Git SSH Service on port ${SSH_PORT}..."
-python3 /app/challenge/git_server/ssh_server.py ${SSH_PORT} &
-PID_SSH=$!
-
 # Wait briefly for microservices to bind
 sleep 1.5
 
-# 9. Start Main Reverse Proxy Gateway on 0.0.0.0:${PORT:-80}
+# 8. Start Main Reverse Proxy Gateway on 0.0.0.0:${PORT:-80}
 PORT=${PORT:-80}
 echo "[+] Starting Latveria CI/CD Web Gateway on port ${PORT}..."
 python3 /app/challenge/gateway/app.py &
@@ -75,12 +69,12 @@ PID_GATEWAY=$!
 
 cleanup() {
     echo "[*] Shutting down X04 services..."
-    kill -TERM $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD $PID_SSH 2>/dev/null || true
-    wait $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD $PID_SSH 2>/dev/null || true
+    kill -TERM $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD 2>/dev/null || true
+    wait $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD 2>/dev/null || true
     exit 0
 }
 
 trap cleanup SIGTERM SIGINT
 
 # Supervise microservice processes
-wait -n $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD $PID_SSH
+wait -n $PID_GATEWAY $PID_DOCKER $PID_REGISTRY $PID_GIT_HTTP $PID_CI $PID_PROD

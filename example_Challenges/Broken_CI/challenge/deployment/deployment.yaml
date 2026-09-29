@@ -39,16 +39,12 @@ spec:
                 - ALL
           ports:
             - containerPort: 80
-              name: http-gateway
-            - containerPort: 22
-              name: ssh-git
+              name: http
           env:
             - name: FLAG
               value: "YUVA{d1nd_c1_runn3r_r3g1stry_pr0d_p1v0t_x04}"
             - name: PORT
               value: "80"
-            - name: SSH_PORT
-              value: "22"
           resources:
             requests:
               cpu: "500m"

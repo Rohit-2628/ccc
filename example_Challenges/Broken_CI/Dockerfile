@@ -25,11 +25,11 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN mkdir -p /tmp/x04_storage /usr/local/bin && \
     cp /app/challenge/inner_docker/docker_cli.py /usr/local/bin/docker && \
     chmod +x /usr/local/bin/docker && \
-    chown -R latveria:latveria /app /tmp/x04_storage && \
+    chown -R latveria:latveria /app /tmp /tmp/x04_storage && \
     chmod +x /app/entrypoint.sh
 
 USER latveria
 
-EXPOSE 80 22
+EXPOSE 80
 
 ENTRYPOINT ["/app/entrypoint.sh"]

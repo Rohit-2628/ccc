@@ -57,6 +57,11 @@ def proxy_request(target_base_url, subpath=""):
 def index():
     return render_template("index.html")
 
+@app.route("/healthz")
+@app.route("/health")
+def healthz():
+    return jsonify({"status": "OK", "service": "gateway"}), 200
+
 @app.route("/api/info")
 def challenge_info():
     return jsonify({

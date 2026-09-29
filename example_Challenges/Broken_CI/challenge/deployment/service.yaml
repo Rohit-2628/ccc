@@ -9,13 +9,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - name: http-gateway
+    - name: http
       port: 80
       targetPort: 80
-      protocol: TCP
-    - name: ssh-git
-      port: 22
-      targetPort: 22
       protocol: TCP
   selector:
     app: x04-broken-ci
