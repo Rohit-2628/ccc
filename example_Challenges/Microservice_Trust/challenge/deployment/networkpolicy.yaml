@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: x02-microservice-trust-isolation
+  labels:
+    app: x02-microservice-trust
+spec:
+  podSelector:
+    matchLabels:
+      app: x02-microservice-trust
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow external ingress traffic to port 80 only via platform gateway
+  - from: []
+    ports:
+    - protocol: TCP
+      port: 80
+  egress:
+  # Allow internal cluster DNS resolution (port 53)
+  - to: []
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Explicitly block access to cloud metadata (169.254.169.254) and cluster control plane

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: x02-microservice-trust
+  labels:
+    app: x02-microservice-trust
+    tier: challenge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: x02-microservice-trust
+  template:
+    metadata:
+      labels:
+        app: x02-microservice-trust
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: challenge
+        image: latveria/x02-microservice-trust:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 2000m
+            memory: 1Gi
+        env:
+        - name: PORT
+          value: "80"
+        - name: FLAG
+          valueFrom:
+            secretKeyRef:
+              name: x02-challenge-secret
+              key: flag
+              optional: true
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: tmp-pki
+          mountPath: /tmp/citadel_mesh_pki
+      volumes:
+      - name: tmp-pki
+        emptyDir:
+          medium: Memory
+          sizeLimit: 64Mi

@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  32-microservice-trust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 32-microservice-trust:latest
+    container_name: 32-microservice-trust
+    ports:
+      - "8092:80"
+    environment:
+      - FLAG=${FLAG:-YUVA{m1cr0s3rv1c3_1d3nt1ty_ch41n_br0k3n_x02}}
+      - PORT=80
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+    restart: unless-stopped

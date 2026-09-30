@@ -1,0 +1,26 @@
+name: 32-microservice-trust
+category: web
+difficulty: Expert
+description: |
+  Microservice Trust (Service Identity & PKI Trust Chain Flaw). Explore the Latveria Citadel microservice mesh on TCP/8092, extract edge service diagnostic credentials, discover the flawed X.509 basicConstraints trust assumption, forge an authorized orchestrator identity assertion certificate chain, and claim the sovereign vault flag.
+docker:
+  internal_ports: [80]
+connection_info: 'http://<host>:8092/'
+connection:
+  protocol: http
+  port: 8092
+credentials:
+  username: anonymous
+  password: 
+flag: YUVA{m1cr0s3rv1c3_1d3nt1ty_ch41n_br0k3n_x02}
+tags:
+  - microservices
+  - service-identity
+  - pki
+  - x509-certificates
+  - sub-ca-misconfiguration
+  - mtls-assertions
+hints:
+  - "Query the edge telemetry diagnostics bundle at /api/v1/diagnostics/export to obtain the service's private key and X.509 certificates."
+  - "Inspect the certificate extensions of Service A. Notice `basicConstraints = CA:TRUE`, which allows Service A to act as an intermediate Certificate Authority."
+  - "Generate an RSA key pair and forge a client certificate for `spiffe://latveria.citadel/sa/doombot-orchestrator` signed by Service A. Submit the chain in `X-Citadel-Identity-Cert` to /api/v1/core/grant-admin-ticket to receive an admin ticket, then unlock the vault at /api/v1/admin/unlock-vault."
