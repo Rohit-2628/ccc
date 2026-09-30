@@ -1,15 +1,16 @@
-FROM python:3.11-slim
+FROM debian:bookworm-slim
 
-# Install system dependencies (no runtime external downloads needed)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies & Python Flask runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-flask \
     make \
     curl \
     tar \
     procps \
     && rm -rf /var/lib/apt/lists/*
-
-# Install required Python packages
-RUN pip install --no-cache-dir flask
 
 # Create unprivileged service user
 RUN groupadd -g 1000 latveria && \
