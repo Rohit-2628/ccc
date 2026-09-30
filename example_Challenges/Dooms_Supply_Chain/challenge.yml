@@ -2,9 +2,10 @@ name: 33-dooms-supply-chain
 category: web
 difficulty: Expert
 description: |
-  Doom's Supply Chain. Exploit package repository trust relationships and dependency confusion on TCP/8093, inject a trojanized release package into automated builds, and extract the production deployment flag.
+  Doom's Supply Chain. Exploit package repository trust relationships and dependency confusion on TCP/8093, analyze package version provenance to extract an emergency maintenance backdoor, and dispatch an authenticated override payload to the production mainframe to recover the flag.
 docker:
   internal_ports: [80]
+connection_info: 'http://<host>:8093/'
 connection:
   protocol: http
   port: 8093
@@ -12,3 +13,14 @@ credentials:
   username: anonymous
   password: 
 flag: YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}
+tags:
+  - supply-chain
+  - package-registry
+  - ci-cd-pipeline
+  - oci-registry
+  - dependency-analysis
+hints:
+  - "Investigate the internal package registry at /api/packages. Look for recent emergency releases, suspicious semantic version tags, or packages with unusual provenance notes."
+  - "Download the archive for the affected @latveria/sentinel-guard package version. Extract its JavaScript contents to find the maintenance override credentials and required parameters."
+  - "Trace the build and container deployment history in /api/ci/builds to verify how the module was embedded into the production image. Submit the override parameters and header to /api/deployment/override to claim the flag."
+
