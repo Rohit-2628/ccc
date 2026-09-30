@@ -1,0 +1,30 @@
+name: "XO-9: Honorport Heist (Docker in Docker)"
+author: "CTF Challenge Engineering Team"
+category: "CI/CD & DinD Security"
+description: >
+  In Doctor Doom's sovereign harbor logistics depot (Honorport), automated cargo containers are deployed via an isolated Docker-in-Docker orchestrator.
+  Connect to the Web Gateway on port 8080 (or SSH on port 2222), exploit parameter injection in the container deployment hook, pivot into the inner Docker daemon, extract the Harbor Master signing key from cached image layers, generate an HMAC-SHA256 vault override request, and capture the flag!
+value: 500
+type: standard
+
+flags:
+  - YUVA{d1nd_h0n0rp0rt_h31st_d0ck3r_1n_d0ck3r_x09}
+
+tags:
+  - docker
+  - dind
+  - ci-cd
+  - forensics
+  - privilege-escalation
+  - hmac
+
+files:
+  - dist/README.md
+
+state: visible
+version: "1.0"
+docker:
+  build: .
+  ports:
+    - 8080
+    - 2222

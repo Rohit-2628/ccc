@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  xo9-honorport-heist:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "2222:2222"
+    environment:
+      - PORT=8080
+      - SSH_PORT=2222
+      - FLAG=YUVA{d1nd_h0n0rp0rt_h31st_d0ck3r_1n_d0ck3r_x09}
+    restart: unless-stopped
