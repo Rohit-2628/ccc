@@ -18,8 +18,8 @@ chmod 600 /tmp/.supply_chain_flag_seed /tmp/x03_storage/.supply_chain_flag_seed 
 unset FLAG CHALLENGE_FLAG DYNAMIC_FLAG FLAG_VAL FLAG_VALUE TARGET_FLAG
 
 # Ensure storage directories and initialize pristine seed snapshot
-export PYTHONPATH="/app:${PYTHONPATH}"
-python3 /app/challenge/snapshot/seed_state.py
+export PYTHONPATH="/app:/app/challenge:${PYTHONPATH}"
+python3 /app/challenge/snapshot/seed_state.py || true
 
 # 1. Start Internal Package Repository (127.0.0.1:4873)
 echo "[+] Launching Local Package Repository on 127.0.0.1:4873..."
@@ -60,4 +60,4 @@ cleanup() {
 trap cleanup SIGINT SIGTERM
 
 # Keep container alive and supervise processes
-wait -n "$GATEWAY_PID" "$CI_PID" "$DEPLOYMENT_PID" "$REGISTRY_PID" "$PKG_PID"
+wait -n "$GATEWAY_PID" "$CI_PID" "$DEPLOYMENT_PID" "$REGISTRY_PID" "$PKG_PID" 2>/dev/null || wait "$GATEWAY_PID"

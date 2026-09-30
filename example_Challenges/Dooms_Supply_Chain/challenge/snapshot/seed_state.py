@@ -6,11 +6,16 @@ Initializes local synthetic package repository, OCI image registry layers, CI st
 
 import os
 import io
+import sys
 import json
 import tarfile
 import hashlib
 import shutil
 from pathlib import Path
+
+sys.path.insert(0, "/app")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 STORAGE_ROOT = Path("/tmp/x03_storage")
 PKG_REPO_DIR = STORAGE_ROOT / "package_repo"
@@ -516,7 +521,10 @@ def reset_all():
     """Full challenge state reset."""
     print("[*] Resetting all challenge storage and services to pristine seed snapshot...")
     if STORAGE_ROOT.exists():
-        shutil.rmtree(STORAGE_ROOT)
+        try:
+            shutil.rmtree(STORAGE_ROOT)
+        except Exception as e:
+            print(f"[!] Warning cleaning storage root: {e}")
     os.makedirs(STORAGE_ROOT, exist_ok=True)
     init_package_repository()
     init_image_registry()

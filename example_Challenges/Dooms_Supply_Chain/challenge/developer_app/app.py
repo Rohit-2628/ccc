@@ -13,6 +13,10 @@ import urllib.request
 import urllib.parse
 import urllib.error
 from pathlib import Path
+
+sys.path.insert(0, "/app")
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from flask import Flask, render_template, jsonify, request, Response, send_file
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
