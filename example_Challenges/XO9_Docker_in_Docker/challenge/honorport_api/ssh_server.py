@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Synthetic SSH Server for XO-9 (Honorport Heist - Docker in Docker)
-Listens on TCP/22 (and TCP/2222 fallback).
-Provides interactive SSH shell and command execution interface for Honorport Harbor Master.
+Synthetic SSH Gateway Server for XO-9 (Honorport Heist - Docker in Docker)
+Listens on TCP/22 (or configured SSH port, e.g. SSH_PORT env var).
+Provides interactive terminal access and command execution over SSH.
 """
 
 import os
@@ -23,6 +23,7 @@ HOST_KEY_FILE = STORAGE_ROOT / "ssh_host_rsa"
 def ensure_host_key():
     if not HOST_KEY_FILE.exists():
         if paramiko:
+            os.makedirs(STORAGE_ROOT, exist_ok=True)
             key = paramiko.RSAKey.generate(2048)
             key.write_private_key_file(str(HOST_KEY_FILE))
     if paramiko and HOST_KEY_FILE.exists():
@@ -41,7 +42,6 @@ if paramiko:
             return paramiko.OPEN_FAILED_ADMINISTRATIVELY_PROHIBITED
 
         def check_auth_password(self, username, password):
-            # Accept honorport, operator, admin
             return paramiko.AUTH_SUCCESSFUL
 
         def check_auth_publickey(self, username, key):
@@ -101,27 +101,26 @@ def handle_client(client_sock):
                     text=True,
                     timeout=15
                 )
-                chan.send((proc.stdout + proc.stderr).encode("utf-8"))
+                output = proc.stdout + proc.stderr
+                chan.send(output.encode("utf-8"))
                 chan.send_exit_status(proc.returncode)
             except Exception as e:
-                chan.send(f"Error executing command: {e}\r\n".encode("utf-8"))
+                chan.send(f"Execution Error: {e}\r\n".encode("utf-8"))
                 chan.send_exit_status(1)
         else:
             welcome = (
                 "\r\n"
                 "====================================================================\r\n"
-                "  HONORPORT HARBOR MASTER — SECURE SSH INTERFACE (TCP/22)\r\n"
+                "  HONORPORT LOGISTICS — SECURE SSH GATEWAY (TCP/22)\r\n"
                 "====================================================================\r\n"
-                "  Connected to Inner Docker Orchestration Sandbox.\r\n"
+                "  Sovereign Harbor Master & Container Deployment Terminal\r\n"
                 "  DOCKER_HOST=tcp://127.0.0.1:2375\r\n"
-                "\r\n"
-                "  Web Gateway: http://<TARGET>:8080/\r\n"
                 "====================================================================\r\n\r\n"
             )
             chan.send(welcome.encode("utf-8"))
             chan.close()
 
-    except Exception:
+    except Exception as e:
         pass
     finally:
         try:
@@ -131,24 +130,26 @@ def handle_client(client_sock):
 
 def run_ssh_server(host="0.0.0.0", port=22):
     if not paramiko:
-        print("[!] Paramiko not installed; SSH server mock mode.")
+        print("[!] Paramiko not installed; SSH server running in mock mode.")
         return
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    try:
-        sock.bind((host, port))
-    except Exception as e:
-        print(f"[!] Could not bind SSH to {host}:{port}: {e}. Retrying on fallback port 2222...")
-        port = 2222
-        try:
-            sock.bind((host, port))
-        except Exception as e2:
-            print(f"[!] Could not bind fallback SSH to {host}:{port}: {e2}.")
-            return
 
-    sock.listen(100)
-    print(f"[+] Honorport SSH Server listening on {host}:{port}")
+    for p in [port, 2222, 2223, 2224]:
+        try:
+            sock.bind((host, p))
+            port = p
+            break
+        except Exception:
+            continue
+
+    try:
+        sock.listen(100)
+        print(f"[+] Honorport SSH Gateway Server listening on {host}:{port}")
+    except Exception as e:
+        print(f"[!] SSH server failed to listen: {e}")
+        return
 
     while True:
         try:

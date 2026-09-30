@@ -1,38 +1,38 @@
 FROM python:3.11-slim
 
-# Install system dependencies & SSH components
+LABEL name="xo9-docker-in-docker" \
+      version="1.0.0" \
+      description="XO-9: Honorport Heist (Docker in Docker CTF Challenge)" \
+      classification="SANDBOX_REQUIRED"
+
+WORKDIR /app
+
+# Install system dependencies & security tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \
     openssh-server \
-    openssh-client \
-    bash \
+    net-tools \
     procps \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python requirements
-RUN pip install --no-cache-dir paramiko
+# Install python dependencies
+RUN pip install --no-cache-dir paramiko requests flask
 
-# Create unprivileged CTF user & group
-RUN groupadd -g 10001 ctf && \
-    useradd -u 10001 -g ctf -m -s /bin/bash ctf
+# Copy challenge assets
+COPY . /app/
 
-WORKDIR /app
+# Set up permissions and CLI wrapper
+RUN chmod +x /app/entrypoint.sh && \
+    chmod +x /app/challenge/snapshot/seed_state.py && \
+    chmod +x /app/challenge/inner_docker/docker_cli.py && \
+    cp /app/challenge/inner_docker/docker_cli.py /usr/local/bin/docker && \
+    chmod +x /usr/local/bin/docker
 
-# Copy challenge files
-COPY challenge /app/challenge
-COPY entrypoint.sh /app/entrypoint.sh
+EXPOSE 80 22 8080
 
-# Make docker CLI binary wrapper available system-wide
-RUN cp /app/challenge/inner_docker/docker_cli.py /usr/local/bin/docker && \
-    chmod +x /usr/local/bin/docker && \
-    chmod +x /app/entrypoint.sh
-
-# Set ownership and permissions
-RUN chown -R ctf:ctf /app
-
-USER ctf
-
-EXPOSE 8080 2222
+ENV PORT=8080
+ENV SSH_PORT=22
+ENV DOCKER_HOST=tcp://127.0.0.1:2375
 
 ENTRYPOINT ["/app/entrypoint.sh"]
