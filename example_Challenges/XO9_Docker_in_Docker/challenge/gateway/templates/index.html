@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honorport Logistics & Harbor Master Console</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>HONORPORT LOGISTICS</h1>
+                <p>Sovereign Harbor Master & Container Deployment Control</p>
+            </div>
+            <div class="status-badge">
+                <span class="dot"></span> SYSTEM ONLINE
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>Deploy Container Manifest</h2>
+                <form id="deploy-form">
+                    <div class="form-group">
+                        <label for="manifest">Cargo Manifest ID</label>
+                        <input type="text" id="manifest" name="manifest" value="honorport/cargo-manifest-standard" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_command">Deployment Hook Command (Advanced)</label>
+                        <input type="text" id="custom_command" name="custom_command" placeholder="docker images">
+                    </div>
+                    <button type="submit" class="btn">Trigger Deployment</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>Deployment Logs & Telemetry</h2>
+                <pre id="output-console">Ready. Trigger deployment to view real-time logs.</pre>
+            </div>
+
+            <div class="panel">
+                <h2>Mainframe Vault Override</h2>
+                <form id="override-form">
+                    <div class="form-group">
+                        <label for="harbor_master_id">Harbor Master ID</label>
+                        <input type="text" id="harbor_master_id" name="harbor_master_id" placeholder="HONORPORT-HARBOR-MASTER-09" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="timestamp">Unix Timestamp</label>
+                        <input type="text" id="timestamp" name="timestamp" placeholder="1727337600" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signature">HMAC-SHA256 Signature</label>
+                        <input type="text" id="signature" name="signature" placeholder="Signature hex digest" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Submit Vault Override</button>
+                </form>
+                <div id="vault-result"></div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

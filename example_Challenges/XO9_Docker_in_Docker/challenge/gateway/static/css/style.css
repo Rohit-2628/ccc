@@ -1,0 +1,132 @@
+:root {
+    --bg-color: #0b0f19;
+    --card-bg: #131b2e;
+    --accent: #00d2ff;
+    --accent-hover: #0099cc;
+    --text-primary: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+    --danger: #ef4444;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    margin: 0;
+    color: var(--accent);
+    letter-spacing: 1px;
+}
+
+header p {
+    margin: 5px 0 0 0;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    background-color: rgba(0, 210, 255, 0.1);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.panel {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    color: var(--accent);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #0d1322;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+
+.btn {
+    background-color: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: #fff;
+}
+
+pre {
+    background-color: #060911;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 15px;
+    color: #38bdf8;
+    font-family: monospace;
+    max-height: 250px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xo9-honorport-heist
+  labels:
+    app.kubernetes.io/name: xo9-honorport-heist
+    app.kubernetes.io/part-of: ctf-challenges
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xo9-honorport-heist
+  template:
+    metadata:
+      labels:
+        app: xo9-honorport-heist
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: challenge
+          image: xo9-honorport-heist:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 2222
+              name: ssh
+          env:
+            - name: PORT
+              value: "8080"
+            - name: SSH_PORT
+              value: "2222"
+            - name: FLAG
+              value: "YUVA{d1nd_h0n0rp0rt_h31st_d0ck3r_1n_d0ck3r_x09}"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
