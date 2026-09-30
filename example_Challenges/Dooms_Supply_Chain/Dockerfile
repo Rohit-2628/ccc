@@ -23,7 +23,9 @@ COPY entrypoint.sh /app/entrypoint.sh
 
 # Create required storage directories with proper permissions
 RUN mkdir -p /tmp/x03_storage && \
-    chown -R latveria:latveria /app /tmp/x03_storage && \
+    chmod 1777 /tmp && \
+    chown -R latveria:latveria /app /tmp /tmp/x03_storage && \
+    chmod -R 755 /app && \
     chmod +x /app/entrypoint.sh
 
 USER latveria

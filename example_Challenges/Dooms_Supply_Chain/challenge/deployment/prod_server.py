@@ -22,11 +22,13 @@ EXPECTED_TARGET = "SENTINEL_SOVEREIGN_CORE"
 
 # Robust dynamic flag resolution
 FLAG_FILE = "/tmp/.supply_chain_flag_seed"
-if os.path.exists(FLAG_FILE):
+FLAG_FILE_ALT = "/tmp/x03_storage/.supply_chain_flag_seed"
+seed_path = FLAG_FILE if os.path.exists(FLAG_FILE) else (FLAG_FILE_ALT if os.path.exists(FLAG_FILE_ALT) else None)
+if seed_path:
     try:
-        with open(FLAG_FILE, "r") as f:
+        with open(seed_path, "r") as f:
             CHALLENGE_FLAG = f.read().strip()
-        os.remove(FLAG_FILE)
+        os.remove(seed_path)
     except Exception:
         CHALLENGE_FLAG = os.environ.get("FLAG", "YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}")
 else:

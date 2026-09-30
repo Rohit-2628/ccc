@@ -10,8 +10,9 @@ FLAG_VAL="$CHALLENGE_FLAG"
 [ -z "$FLAG_VAL" ] && FLAG_VAL="YUVA{supp1y_ch41n_p01s0n1ng_t0_pr0d_d3p10ym3nt_x03}"
 
 # Pass dynamic flag to production seed file with restricted permissions
-echo -n "$FLAG_VAL" > /tmp/.supply_chain_flag_seed
-chmod 600 /tmp/.supply_chain_flag_seed 2>/dev/null || true
+mkdir -p /tmp/x03_storage 2>/dev/null || true
+echo -n "$FLAG_VAL" > /tmp/.supply_chain_flag_seed 2>/dev/null || echo -n "$FLAG_VAL" > /tmp/x03_storage/.supply_chain_flag_seed 2>/dev/null || true
+chmod 600 /tmp/.supply_chain_flag_seed /tmp/x03_storage/.supply_chain_flag_seed 2>/dev/null || true
 
 # Unset sensitive environment variables before starting public gateway or background services
 unset FLAG CHALLENGE_FLAG DYNAMIC_FLAG FLAG_VAL FLAG_VALUE TARGET_FLAG
